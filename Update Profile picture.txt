@@ -1,0 +1,120 @@
+const [userName, setUserName] = useState("")
+  const [userEmail, setUserEmail] = useState("")
+  const [userCode, setUserCode] = useState("")
+  const [userPicture, setUserPicture] = useState("")
+  const [UpdatePhoto, setUpdatePhoto] = useState("")
+  const [Photobase64, setphotobase64] = useState("")
+
+  useEffect(() => {
+    prefManager.getUserSessionData((data) => {
+      console.log("\x1b[34m====AccountScreen GetData====", JSON.stringify(data))
+
+      // var Token = data.data?.token
+      // setToken(data.data?.token)
+      setUserName(data?.data?.userDetails?.p_user_name)
+      setUserEmail(data?.data?.userDetails?.p_user_email)
+      setUserCode(data?.data?.userDetails?.p_user_iban_code)
+      setUserPicture(data?.data?.userDetails?.p_user_photo)
+      // console.log("\x1b[35m======== UserEmail State =========", userEmail)
+    })
+
+    // imgToBase64()
+
+
+    // photoUpdate_ApiCaller();
+  }, [Photobase64])
+
+  function photoUpdate_ApiCaller(imagePath) {
+
+    // if (email == "") {
+    //     helper.showTextToast("Email empty.", Colors.theme)
+    //     return
+    // }
+
+    // let body = "p_user_city=" + CountryCity + "&p_user_address=" + Address
+    let body = "photo_base64=" + Photobase64
+
+    // setisLoading(true)       //--- Loader On
+
+    apiHandler.sendSecurePostRequest(
+      Urls.UPDATE_PHOTO,
+      body,
+      (resp) => {
+        console.log("\x1b[33m-------UPDATE_PHOTO-------->>>>", resp.data?.details)
+
+        // setUpdatePhoto(resp.data?.details?.p_user_photo)
+
+        // return
+      },
+      (error) => {
+        helper.showTextToast(error, Colors.theme)
+        // setisLoading(false)
+      }
+    )
+  }
+
+  function galleryImageController() {
+    // setPhotoLoading(true)
+    ImagePicker.openPicker({
+      width: 0,
+      height: 0,
+      //  cropping: Platform.OS=="ios"? false:true,
+      compressImageQuality: 0.1
+    }).then(image => {
+      console.log('\x1b[32m=======IMAGE PICKER =========>', image)
+      setUpdatePhoto({
+        photo_path: image.path,
+        photomime: image.mime,
+      })
+    });
+
+
+    fetch(UpdatePhoto.photo_path)
+      .then(response => response.blob())
+      .then(blob => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64data = reader.result;
+          setphotobase64(base64data ,()=>{
+
+            photoUpdate_ApiCaller()
+          })
+          console.log("=====================>>>>>>>>>>>>>>>>>>>>>>", base64data); // Base64 string
+          // console.log("=====================>>>>>>>>>>>>>>>>>>>>>>", Photobase64); // Base64 string
+
+        };
+        reader.readAsDataURL(blob);
+      })
+
+  }
+
+  function imageRemover() {
+    ImagePicker.clean().then(() => {
+      console.log('==== removed all tmp images from tmp directory ====');
+      setPhotoPath("")
+      helper.showTextToast("Photo Removed", Colors.theme)
+    }).catch(e => {
+      // alert(e);
+      helper.showTextToast(e, Colors.theme)
+    });
+  }
+
+  function imgToBase64(imagePath) {
+    // fetch('file:///storage/emulated/0/Android/data/com.prodem.bw/files/Pictures/73d71eb4-cff9-4f0c-b869-f6c8b2e0cc6a.jpg')
+    fetch(imagePath)
+      .then(response => response.blob())
+      .then(blob => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64data = reader.result;
+          setphotobase64(base64data)
+          console.log("=====================>>>>>>>>>>>>>>>>>>>>>>", base64data); // Base64 string
+          // console.log("=====================>>>>>>>>>>>>>>>>>>>>>>", Photobase64); // Base64 string
+
+        };
+        reader.readAsDataURL(blob);
+
+        // photoUpdate_ApiCaller();
+      });
+
+  }

@@ -1,0 +1,365 @@
+import React, { useState, useEffect } from 'react'
+import {
+    View, Text, StatusBar, Image, FlatList,
+    ScrollView, TextInput, TouchableOpacity, ActivityIndicator
+} from 'react-native'
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { Colors } from '../../../Colors/Colors';
+import changeNavigationBarColor, { hideNavigationBar, showNavigationBar } from 'react-native-navigation-bar-color';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import TextInputs from '../../../ReuseableComponents/TextInputs';
+import Simple_Button from '../../../ReuseableComponents/Simple_Button';
+import Register_or_Not from '../../../ReuseableComponents/Register_or_Not';
+import Account_DetailsTab from '../../../ReuseableComponents/Account_DetailsTab';
+import { useNavigation, CommonActions } from '@react-navigation/native';
+import Header from '../../../ReuseableComponents/Header';
+import { FONTS } from '../../../Assets/fonts/AppFonts';
+import Text_Statement from '../../../ReuseableComponents/Text_Statement';
+import Items_List from '../../../ReuseableComponents/Items_List';
+import Helpers from '../../Data/Helpers';
+import ApiHandler from '../../Data/ApiHandler';
+import PrefManager from '../../Data/PrefManager';
+import Urls from '../../Data/Urls';
+
+const helper = new Helpers()
+const apiHandler = new ApiHandler()
+const prefManager = new PrefManager()
+
+export default function UpdateProfile_Screen() {
+    const navigation = useNavigation();
+
+    const [ProfilePic, setProfilePic] = useState("")
+    const [Name, setName] = useState("")
+    const [Phone, setPhone] = useState("")
+    const [CountryCity, setCountryCity] = useState(1)
+    const [OptimizedType, setOptimizedType] = useState(1)
+    const [Address, setAddress] = useState("")
+    const [Entity, setEntity] = useState("")
+    const [CIF, setCIF] = useState("")
+    const [NrReg, setNrReg] = useState("")
+    const [Headquarter, setHeadquarter] = useState("")
+    const [Bank, setBank] = useState("")
+    const [IBANCode, setIBANCode] = useState("")
+
+    const [isLoading, setisLoading] = useState(false)
+    const [ProfileDetail, setWishlistDetail] = useState("")
+
+    useEffect(() => {
+        // changeNavigationBarColor(Colors.primary_color);
+
+        // profileDetail_ApiCaller();
+    }, [1])
+
+    function profileUpdate_ApiCaller() {
+        if (CountryCity == "") {
+            helper.showTextToast("Country/City Required.", Colors.theme)
+            return
+        }
+        // if (email == "") {
+        //     helper.showTextToast("Email empty.", Colors.theme)
+        //     return
+        // }
+        // if (email == "") {
+        //     helper.showTextToast("Email empty.", Colors.theme)
+        //     return
+        // }
+
+        let body = "p_user_city=" + CountryCity + "&p_user_address=" + Address + "&p_user_company_name=" + Entity +
+            "&p_user_tax_registration_code=" + CIF + "&p_user_nr_reg_com=" + NrReg + "&p_user_headquarters_address=" +
+            Headquarter + "&p_user_bank=" + Bank + "&p_user_iban_code=" + IBANCode + "&p_user_mobile=" + Phone +
+            "&p_user_optimized_type=" + OptimizedType
+
+        setisLoading(true)       //--- Loader On
+
+        apiHandler.sendSecurePostRequest(
+            Urls.PROFILE_UPDATE,
+            body,
+            (resp) => {
+                console.log("\x1b[31m-------PROFILE_UPDATE-------->>>>", resp.data?.details)
+
+                // return
+                // setWishlistDetail(resp.data?.details)
+
+                // setName()
+                setisLoading(false)
+            },
+            (error) => {
+                helper.showTextToast(error, Colors.theme)
+                setisLoading(false)
+            }
+        )
+    }
+
+
+    return (
+        <View style={{
+            flex: 1,
+            // backgroundColor: Colors.gray2,
+        }}>
+            <Header
+                StatusbarColor={Colors.theme}
+                BarStyle={"dark-content"}
+                backButton={true}
+                GoBack={() => { }}
+                Title={"Update Profile"}
+            />
+
+            {isLoading ?
+                <View style={{
+                    // flex: 1,
+                    height: hp(85),
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    // marginTop: hp(30),
+                    // backgroundColor: 'yellow',
+                }}>
+                    <ActivityIndicator size="large" color={Colors.theme}
+                        style={{
+                            // marginTop: hp(11),
+                            // alignSelf: 'center',
+                        }} />
+                </View>
+                :
+                <View
+                    style={{
+                        marginTop: hp(2),
+                        marginHorizontal: wp(4),
+                        flex: 1
+                        // backgroundColor: 'plum',
+                    }}>
+
+                    <ScrollView showsVerticalScrollIndicator={false}
+                        style={{
+                            // flex:1,
+                            height: hp(80),
+                            // backgroundColor: 'plum',
+                            // paddingBottom:hp(3)
+                        }}>
+
+                        <View style={{
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            // backgroundColor: 'red',
+                            // marginTop: hp(1),
+                            paddingBottom: hp(2)
+                        }}>
+                            <Image
+                                resizeMode='center'
+                                source={require('../../../Assets/Images/BottomTab/account.png')}
+                                // source={{ uri: ProfilePic }}
+                                style={{
+                                    width: hp(17),
+                                    height: hp(17),
+                                    // backgroundColor: 'plum',
+                                    borderRadius: hp(50)
+                                }}>
+                            </Image>
+
+                            <TouchableOpacity
+                                activeOpacity={0.5}>
+                                <Image
+                                    resizeMode='center'
+                                    source={require('../../../Assets/Images/editpic.png')}
+                                    style={{
+                                        width: hp(4),
+                                        height: hp(4),
+                                        position: 'absolute',
+                                        right: wp(-16),
+                                        bottom: hp(0.5),
+                                        tintColor: Colors.gray1
+                                    }}>
+                                </Image>
+                            </TouchableOpacity>
+
+                        </View>
+
+                        <Text_Statement
+                            Statement={"Name"}
+                        />
+                        <TextInputs
+                            Keyboardtype={'default'}
+                            AutoCapital={'none'}
+                            PlaceHolder={""}
+                            PlaceHolderColor={Colors.gray2}
+                            Value={Name}
+                            OnChangeText={(text) => { setName(text) }}
+                            ReturnType={"default"}
+                            MultiLines={false}
+                            NumOfLines={1}
+                            Width={wp(90)}
+                            Height={hp(6)}
+                        />
+
+                        <Text_Statement
+                            Statement={"Phone No."}
+                        />
+                        <TextInputs
+                            Keyboardtype={'default'}
+                            AutoCapital={'none'}
+                            PlaceHolder={""}
+                            PlaceHolderColor={Colors.gray2}
+                            Value={Phone}
+                            OnChangeText={(text) => { setPhone(text) }}
+                            ReturnType={"default"}
+                            MultiLines={false}
+                            NumOfLines={1}
+                            Width={wp(90)}
+                            Height={hp(6)}
+                        />
+
+                        <Text_Statement
+                            Statement={"Country/City"}
+                        />
+                        <TextInputs
+                            Keyboardtype={'default'}
+                            AutoCapital={'none'}
+                            PlaceHolder={"Not Selected"}
+                            PlaceHolderColor={Colors.gray2}
+                            Value={CountryCity}
+                            OnChangeText={(text) => { setCountryCity(text) }}
+                            ReturnType={"default"}
+                            MultiLines={false}
+                            NumOfLines={1}
+                            Width={wp(90)}
+                            Height={hp(6)}
+                        />
+
+                        <Text_Statement
+                            Statement={"Address"}
+                        />
+                        <TextInputs
+                            Keyboardtype={'default'}
+                            AutoCapital={'none'}
+                            PlaceHolder={""}
+                            PlaceHolderColor={Colors.gray2}
+                            Value={Address}
+                            OnChangeText={(text) => { setAddress(text) }}
+                            ReturnType={"default"}
+                            MultiLines={true}
+                            NumOfLines={3}
+                            Width={wp(90)}
+                            Height={hp(14)}
+                        />
+
+                        <Text_Statement
+                            Statement={"Legal Entity"}
+                        />
+                        <TextInputs
+                            Keyboardtype={'default'}
+                            AutoCapital={'none'}
+                            PlaceHolder={"Not Selected"}
+                            PlaceHolderColor={Colors.gray2}
+                            Value={Entity}
+                            OnChangeText={(text) => { setEntity(text) }}
+                            ReturnType={"default"}
+                            MultiLines={false}
+                            NumOfLines={1}
+                            Width={wp(90)}
+                            Height={hp(6)}
+                        />
+
+                        <Text_Statement
+                            Statement={"CIF/WHICH"}
+                        />
+                        <TextInputs
+                            Keyboardtype={'default'}
+                            AutoCapital={'none'}
+                            PlaceHolder={""}
+                            PlaceHolderColor={Colors.gray2}
+                            Value={CIF}
+                            OnChangeText={(text) => { setCIF(text) }}
+                            ReturnType={"default"}
+                            MultiLines={false}
+                            NumOfLines={1}
+                            Width={wp(90)}
+                            Height={hp(6)}
+                        />
+
+                        <Text_Statement
+                            Statement={"Nr. Reg. Com"}
+                        />
+                        <TextInputs
+                            Keyboardtype={'default'}
+                            AutoCapital={'none'}
+                            PlaceHolder={""}
+                            PlaceHolderColor={Colors.gray2}
+                            Value={NrReg}
+                            OnChangeText={(text) => { setNrReg(text) }}
+                            ReturnType={"default"}
+                            MultiLines={false}
+                            NumOfLines={1}
+                            Width={wp(90)}
+                            Height={hp(6)}
+                        />
+
+                        <Text_Statement
+                            Statement={"Headquarter address"}
+                        />
+                        <TextInputs
+                            Keyboardtype={'default'}
+                            AutoCapital={'none'}
+                            PlaceHolder={""}
+                            PlaceHolderColor={Colors.gray2}
+                            Value={Headquarter}
+                            OnChangeText={(text) => { setHeadquarter(text) }}
+                            ReturnType={"default"}
+                            MultiLines={true}
+                            NumOfLines={3}
+                            Width={wp(90)}
+                            Height={hp(14)}
+                        />
+
+                        <Text_Statement
+                            Statement={"Bank"}
+                        />
+                        <TextInputs
+                            Keyboardtype={'default'}
+                            AutoCapital={'none'}
+                            PlaceHolder={""}
+                            PlaceHolderColor={Colors.gray2}
+                            Value={Bank}
+                            OnChangeText={(text) => { setBank(text) }}
+                            ReturnType={"default"}
+                            MultiLines={false}
+                            NumOfLines={1}
+                            Width={wp(90)}
+                            Height={hp(6)}
+                        />
+
+                        <Text_Statement
+                            Statement={"IBAN Code"}
+                        />
+                        <TextInputs
+                            Keyboardtype={'default'}
+                            AutoCapital={'none'}
+                            PlaceHolder={""}
+                            PlaceHolderColor={Colors.gray2}
+                            Value={IBANCode}
+                            OnChangeText={(text) => { setIBANCode(text) }}
+                            ReturnType={"default"}
+                            MultiLines={false}
+                            NumOfLines={1}
+                            Width={wp(90)}
+                            Height={hp(6)}
+                        />
+
+                        {/* ============ PostButton =========== */}
+                        <View style={{
+                            marginTop: hp(3),
+                            marginBottom: hp(15),
+                            // backgroundColor: 'plum',
+                        }}>
+                            <Simple_Button
+                                OnAction={() => { }}
+                                Width={wp(90)}
+                                Height={hp(6)}
+                                BtnTitle={"Update"}
+                            />
+                        </View>
+
+                    </ScrollView>
+                </View>
+            }
+        </View>
+    )
+}
