@@ -186,6 +186,7 @@ export default function Cart_Screen() {
                     ItemName={item.product_name}
                     Qty={item.user_cart_qty}
                     Price={item.product_price}
+                    item={item}
                   />
                 );
               }}

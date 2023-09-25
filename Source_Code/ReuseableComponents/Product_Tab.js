@@ -13,9 +13,7 @@ export default function Product_Tab(props) {
   return (
     <TouchableOpacity
       onPress={() => {
-        // props.OnAction();
-        // alert(props?.ImageLink)
-        console.log(props?.ImageLink);
+        props.OnAction();
       }}
       activeOpacity={0.4}
       style={{

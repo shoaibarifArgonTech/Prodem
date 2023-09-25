@@ -30,6 +30,7 @@ import Helpers from "../../Data/Helpers";
 import Urls from "../../Data/Urls";
 import ApiHandler from "../../Data/ApiHandler";
 import PrefManager from "../../Data/PrefManager";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const helper = new Helpers();
 const apiHandler = new ApiHandler();
@@ -104,277 +105,289 @@ export default function LoginScreen() {
   };
 
   return (
-    <View
+    <KeyboardAwareScrollView
       style={{
         flex: 1,
         backgroundColor: Colors.AuthScreenBlack,
       }}
+      contentContainerStyle={{
+        flexGrow: 1,
+        backgroundColor: Colors.AuthScreenBlack,
+      }}
+      showsVerticalScrollIndicator={false}
     >
-      <StatusBar
-        backgroundColor={Colors.AuthScreenBlack}
-        translucent={false}
-        barStyle="light-content"
-        // barStyle="dark-content"
-      />
-
       <View
         style={{
-          // backgroundColor: 'plum',
-          alignItems: "center",
-          marginHorizontal: wp(5),
-          marginTop: hp(4),
+          flex: 1,
+          backgroundColor: Colors.AuthScreenBlack,
         }}
       >
-        {/* ======= Text with Logo ========= */}
+        <StatusBar
+          backgroundColor={Colors.AuthScreenBlack}
+          translucent={false}
+          barStyle="light-content"
+          // barStyle="dark-content"
+        />
+
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: hp(2),
             // backgroundColor: 'plum',
+            alignItems: "center",
+            marginHorizontal: wp(5),
+            marginTop: hp(4),
           }}
         >
-          <Image
-            resizeMode="contain"
-            source={require("../../../Assets/Images/logo.png")}
-            style={{
-              width: wp(30),
-              height: hp(11),
-              // marginBottom: hp(5),
-            }}
-          ></Image>
-
-          <View
-            style={{
-              marginLeft: wp(2),
-            }}
-          >
-            <Text
-              style={{
-                fontSize: hp(3),
-                color: Colors.white_text,
-                marginBottom: hp(1),
-                fontWeight: "600",
-              }}
-            >
-              Welcome to prodem
-            </Text>
-
-            <Text
-              style={{
-                fontSize: hp(1.8),
-                color: Colors.white_text,
-              }}
-            >
-              Enter your details to login
-            </Text>
-          </View>
-        </View>
-
-        <View
-          style={{
-            marginTop: hp(10),
-          }}
-        >
-          <Text
-            style={{
-              fontSize: hp(2.6),
-              color: Colors.theme,
-              fontWeight: "500",
-              alignSelf: "flex-start",
-            }}
-          >
-            Email
-          </Text>
-          <Input_For_Auth
-            Keyboardtype={"email-address"}
-            AutoCapital={"none"}
-            PlaceHolder={""}
-            PlaceHolderColor={""}
-            Value={email}
-            OnChangeText={(text) => {
-              setEmail(text);
-            }}
-            SecureText={false}
-            ReturnType={"done"}
-            Width={wp(90)}
-            Height={hp(6)}
-          ></Input_For_Auth>
-
-          <Text
-            style={{
-              fontSize: hp(2.6),
-              color: Colors.theme,
-              fontWeight: "500",
-              alignSelf: "flex-start",
-            }}
-          >
-            Password
-          </Text>
+          {/* ======= Text with Logo ========= */}
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
-              justifyContent: "space-between",
+              marginTop: hp(2),
               // backgroundColor: 'plum',
             }}
           >
+            <Image
+              resizeMode="contain"
+              source={require("../../../Assets/Images/logo.png")}
+              style={{
+                width: wp(30),
+                height: hp(11),
+                // marginBottom: hp(5),
+              }}
+            ></Image>
+
+            <View
+              style={{
+                marginLeft: wp(2),
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: hp(3),
+                  color: Colors.white_text,
+                  marginBottom: hp(1),
+                  fontWeight: "600",
+                }}
+              >
+                Welcome to prodem
+              </Text>
+
+              <Text
+                style={{
+                  fontSize: hp(1.8),
+                  color: Colors.white_text,
+                }}
+              >
+                Enter your details to login
+              </Text>
+            </View>
+          </View>
+
+          <View
+            style={{
+              marginTop: hp(10),
+            }}
+          >
+            <Text
+              style={{
+                fontSize: hp(2.6),
+                color: Colors.theme,
+                fontWeight: "500",
+                alignSelf: "flex-start",
+              }}
+            >
+              Email
+            </Text>
             <Input_For_Auth
-              Keyboardtype={"default"}
+              Keyboardtype={"email-address"}
               AutoCapital={"none"}
               PlaceHolder={""}
               PlaceHolderColor={""}
-              Value={Password}
+              Value={email}
               OnChangeText={(text) => {
-                setPassword(text);
+                setEmail(text);
               }}
-              SecureText={!isPasswordVisible}
+              SecureText={false}
               ReturnType={"done"}
-              Width={wp(80)}
+              Width={wp(90)}
               Height={hp(6)}
             ></Input_For_Auth>
 
-            <TouchableOpacity
-              onPress={() => {
-                togglePasswordVisibility();
-              }}
+            <Text
               style={{
-                alignItems: "center",
-                justifyContent: "center",
-                padding: hp(0.5),
-                // backgroundColor: Colors.white,
+                fontSize: hp(2.6),
+                color: Colors.theme,
+                fontWeight: "500",
+                alignSelf: "flex-start",
               }}
             >
-              <Ionicons
-                name={isPasswordVisible ? "eye" : "eye-off"}
-                size={20}
-                color={Colors.white}
-              />
-            </TouchableOpacity>
+              Password
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                // backgroundColor: 'plum',
+              }}
+            >
+              <Input_For_Auth
+                Keyboardtype={"default"}
+                AutoCapital={"none"}
+                PlaceHolder={""}
+                PlaceHolderColor={""}
+                Value={Password}
+                OnChangeText={(text) => {
+                  setPassword(text);
+                }}
+                SecureText={!isPasswordVisible}
+                ReturnType={"done"}
+                Width={wp(80)}
+                Height={hp(6)}
+              ></Input_For_Auth>
+
+              <TouchableOpacity
+                onPress={() => {
+                  togglePasswordVisibility();
+                }}
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: hp(0.5),
+                  // backgroundColor: Colors.white,
+                }}
+              >
+                <Ionicons
+                  name={isPasswordVisible ? "eye" : "eye-off"}
+                  size={20}
+                  color={Colors.white}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
 
-        {/* ==========DEVICE TEXT FIELD ============ */}
-        <View
-          style={
-            {
-              // backgroundColor: 'red',
+          {/* ==========DEVICE TEXT FIELD ============ */}
+          <View
+            style={
+              {
+                // backgroundColor: 'red',
+              }
             }
-          }
-        >
-          <Text
+          >
+            <Text
+              style={{
+                fontSize: hp(2.6),
+                color: Colors.theme,
+                fontWeight: "500",
+                alignSelf: "flex-start",
+              }}
+            >
+              Device
+            </Text>
+
+            <Text
+              style={{
+                fontSize: hp(2.2),
+                color: Colors.white_text,
+                // color: Colors.black,
+                width: wp(90),
+                // height: hp(6),
+                borderBottomColor: Colors.theme,
+                borderBottomWidth: 1.5,
+                marginTop: hp(1),
+                paddingBottom: hp(1),
+                paddingHorizontal: wp(0.7),
+                // marginVertical: hp(1),
+                // backgroundColor: 'plum',
+                // marginBottom: hp(1),
+              }}
+            >
+              {Platform.OS}
+            </Text>
+          </View>
+
+          {/* =============== LOGIN BUTTON ============== */}
+          <View
             style={{
-              fontSize: hp(2.6),
-              color: Colors.theme,
-              fontWeight: "500",
-              alignSelf: "flex-start",
+              marginTop: hp(20),
             }}
           >
-            Device
-          </Text>
+            <Simple_Button
+              OnAction={() => {
+                loginController();
+              }}
+              Width={wp(90)}
+              Height={hp(6)}
+              BtnTitle={"Login"}
+            />
 
-          <Text
-            style={{
-              fontSize: hp(2.2),
-              color: Colors.white_text,
-              // color: Colors.black,
-              width: wp(90),
-              // height: hp(6),
-              borderBottomColor: Colors.theme,
-              borderBottomWidth: 1.5,
-              marginTop: hp(1),
-              paddingBottom: hp(1),
-              paddingHorizontal: wp(0.7),
-              // marginVertical: hp(1),
-              // backgroundColor: 'plum',
-              // marginBottom: hp(1),
-            }}
-          >
-            {Platform.OS}
-          </Text>
-        </View>
-
-        {/* =============== LOGIN BUTTON ============== */}
-        <View
-          style={{
-            marginTop: hp(20),
-          }}
-        >
-          <Simple_Button
-            OnAction={() => {
-              loginController();
-            }}
-            Width={wp(90)}
-            Height={hp(6)}
-            BtnTitle={"Login"}
-          />
-
-          {/* <Register_or_Not
+            {/* <Register_or_Not
             OnAction={() => { navigation.navigate("Signup_Screen") }}
             Statement={"Don't have an account"}
             Screen={"Signup"}
           /> */}
 
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("ForgetPassword");
-            }}
-            activeOpacity={0.5}
-            style={{
-              marginLeft: wp(1),
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: hp(2),
-              // backgroundColor: 'red',
-            }}
-          >
-            <Text
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("ForgetPassword");
+              }}
+              activeOpacity={0.5}
               style={{
-                fontSize: hp(2.2),
-                color: Colors.theme,
-                fontWeight: "600",
+                marginLeft: wp(1),
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: hp(2),
+                // backgroundColor: 'red',
               }}
             >
-              Forget Password?
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{
+                  fontSize: hp(2.2),
+                  color: Colors.theme,
+                  fontWeight: "600",
+                }}
+              >
+                Forget Password?
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
 
-      {modalVisible && (
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <View
-            style={{
-              width: wp(40),
-              height: hp(20),
-              backgroundColor: Colors.secondary_color,
-              borderRadius: hp(1),
-              position: "absolute",
-              top: hp(35),
-              alignSelf: "center",
-              alignItems: "center",
-              justifyContent: "center",
+        {modalVisible && (
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
             }}
           >
-            <ActivityIndicator
-              size={"large"}
-              color={Colors.theme}
-              style={
-                {
-                  // alignSelf: 'center',
+            <View
+              style={{
+                width: wp(40),
+                height: hp(20),
+                backgroundColor: Colors.secondary_color,
+                borderRadius: hp(1),
+                position: "absolute",
+                top: hp(35),
+                alignSelf: "center",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <ActivityIndicator
+                size={"large"}
+                color={Colors.theme}
+                style={
+                  {
+                    // alignSelf: 'center',
+                  }
                 }
-              }
-            ></ActivityIndicator>
-          </View>
-        </Modal>
-      )}
-    </View>
+              ></ActivityIndicator>
+            </View>
+          </Modal>
+        )}
+      </View>
+    </KeyboardAwareScrollView>
   );
 }

@@ -8,6 +8,7 @@ import { Colors } from "../Colors/Colors";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function Items_List(props) {
+  const { item } = props;
   return (
     <TouchableOpacity
       activeOpacity={0.5}
@@ -26,17 +27,16 @@ export default function Items_List(props) {
         resizeMode="cover"
         // source={require('../Assets/Images/noimage.png')}
         source={{
-          uri:
-            props.ImageLink == "" || props.ImageLink == null
-              ? "https://www.ncenet.com/wp-content/uploads/2020/04/No-image-found.jpg"
-              : props.ImageLink,
+          uri: item?.product_image
+            ? item?.product_image
+            : "https://www.ncenet.com/wp-content/uploads/2020/04/No-image-found.jpg",
         }}
         style={{
           width: hp(10),
           height: hp(10),
           borderRadius: hp(1.5),
         }}
-      ></Image>
+      />
 
       <View
         style={{
@@ -60,7 +60,7 @@ export default function Items_List(props) {
             // backgroundColor: 'plum',
           }}
         >
-          {props.ItemName}
+          {item?.product_name}
         </Text>
 
         {/* ======= QTY ========= */}
@@ -94,7 +94,7 @@ export default function Items_List(props) {
               // backgroundColor: 'plum',
             }}
           >
-            {props.Qty == "" || props.Qty == null ? 1 : props.Qty}
+            {item?.user_cart_qty ?? "N/A"}
           </Text>
         </View>
 
@@ -129,7 +129,7 @@ export default function Items_List(props) {
               // backgroundColor: 'plum',
             }}
           >
-            {props.Price}
+            {item?.product_price}
           </Text>
         </View>
 

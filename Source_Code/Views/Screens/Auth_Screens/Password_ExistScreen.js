@@ -27,6 +27,7 @@ import Helpers from "../../Data/Helpers";
 import Urls from "../../Data/Urls";
 import ApiHandler from "../../Data/ApiHandler";
 import PrefManager from "../../Data/PrefManager";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const helper = new Helpers();
 const apiHandler = new ApiHandler();
@@ -93,11 +94,16 @@ export default function Password_ExistScreen() {
   }
 
   return (
-    <View
+    <KeyboardAwareScrollView
       style={{
         flex: 1,
         backgroundColor: Colors.AuthScreenBlack,
       }}
+      contentContainerStyle={{
+        flexGrow: 1,
+        backgroundColor: Colors.AuthScreenBlack,
+      }}
+      showsVerticalScrollIndicator={false}
     >
       <StatusBar
         backgroundColor={Colors.AuthScreenBlack}
@@ -305,6 +311,6 @@ export default function Password_ExistScreen() {
           ></View>
         </Modal>
       )}
-    </View>
+    </KeyboardAwareScrollView>
   );
 }

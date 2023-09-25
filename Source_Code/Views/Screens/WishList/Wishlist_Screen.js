@@ -211,6 +211,7 @@ export default function Wishlist_Screen() {
                     Qty={item.user_cart_qty}
                     Price={item.product_price}
                     ImageLink={item.product_image}
+                    item={item}
                   />
                 );
               }}

@@ -1,120 +1,150 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
 import {
-  View, Text, StatusBar, Image, FlatList, TextInput,
-  TouchableOpacity, ScrollView, ActivityIndicator
-} from 'react-native'
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Colors } from '../../../Colors/Colors';
-import changeNavigationBarColor, { hideNavigationBar, showNavigationBar } from 'react-native-navigation-bar-color';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import Simple_Button from '../../../ReuseableComponents/Simple_Button';
-import { useNavigation, CommonActions, useRoute } from '@react-navigation/native';
-import Input_For_Auth from '../../../ReuseableComponents/Input_For_Auth';
+  View,
+  Text,
+  StatusBar,
+  Image,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+import { Colors } from "../../../Colors/Colors";
+import changeNavigationBarColor, {
+  hideNavigationBar,
+  showNavigationBar,
+} from "react-native-navigation-bar-color";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import Simple_Button from "../../../ReuseableComponents/Simple_Button";
+import {
+  useNavigation,
+  CommonActions,
+  useRoute,
+} from "@react-navigation/native";
+import Input_For_Auth from "../../../ReuseableComponents/Input_For_Auth";
 
-import Helpers from '../../Data/Helpers';
-import Urls from '../../Data/Urls';
-import ApiHandler from '../../Data/ApiHandler';
-import PrefManager from '../../Data/PrefManager';
+import Helpers from "../../Data/Helpers";
+import Urls from "../../Data/Urls";
+import ApiHandler from "../../Data/ApiHandler";
+import PrefManager from "../../Data/PrefManager";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-
-const helper = new Helpers()
-const apiHandler = new ApiHandler()
-const prefManager = new PrefManager()
+const helper = new Helpers();
+const apiHandler = new ApiHandler();
+const prefManager = new PrefManager();
 
 const SetNewPassword = () => {
-
   const navigation = useNavigation();
-  const route = useRoute()
+  const route = useRoute();
 
-  const [isLoading, setisLoading] = useState(false)
+  const [isLoading, setisLoading] = useState(false);
 
   const [OTP, setOTP] = useState(route.params?.OTPVerify ?? "");
-  const [User_Id, setUser_Id] = useState(route.params?.USER_IDVerify ?? "")
-  const [NewPassword, setNewPassword] = useState("")
-  const [ConfirmPassword, setConfirmPassword] = useState("")
+  const [User_Id, setUser_Id] = useState(route.params?.USER_IDVerify ?? "");
+  const [NewPassword, setNewPassword] = useState("");
+  const [ConfirmPassword, setConfirmPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   useEffect(() => {
     changeNavigationBarColor(Colors.transparent);
 
-
-    console.log("======VERIFY USER ID=====", User_Id)
-    console.log("======VERIFY USER OTP=====", OTP)
-
-  }, [1])
+    console.log("======VERIFY USER ID=====", User_Id);
+    console.log("======VERIFY USER OTP=====", OTP);
+  }, [1]);
 
   function setNewPassword_Controller() {
     if (NewPassword == "") {
-      helper.showTextToast("Must fill Password.", Colors.theme)
-      return
+      helper.showTextToast("Must fill Password.", Colors.theme);
+      return;
     }
     if (ConfirmPassword == "") {
-      helper.showTextToast("Please fill confirm password.", Colors.theme)
-      return
+      helper.showTextToast("Please fill confirm password.", Colors.theme);
+      return;
     }
     if (NewPassword !== ConfirmPassword) {
-      helper.showTextToast("Confirm password must be same.", Colors.theme)
-      return
+      helper.showTextToast("Confirm password must be same.", Colors.theme);
+      return;
     }
 
-    let body = "email=" + User_Id + "&verification_code=" + OTP + "&new_password=" + NewPassword
-    setisLoading(true)         //-- indicator On
+    let body =
+      "email=" +
+      User_Id +
+      "&verification_code=" +
+      OTP +
+      "&new_password=" +
+      NewPassword;
+    setisLoading(true); //-- indicator On
 
     apiHandler.sendSimplePostRequest(
       Urls.USER_LOGIN,
       body,
       (resp) => {
-        console.log("\x1b[36m%s\x1b[0m -------NEW PASSWORD RESP------->>>", resp.data)
+        console.log(
+          "\x1b[36m%s\x1b[0m -------NEW PASSWORD RESP------->>>",
+          resp.data
+        );
 
         // return
 
         if (resp.status == "success" && resp.code == 200) {
           // prefManager.updateLoginStatus(toggle)
-          helper.showTextToast(resp.message, Colors.theme)
-          setisLoading(false)
+          helper.showTextToast(resp.message, Colors.theme);
+          setisLoading(false);
 
-          helper.resetAndGo(navigation, "NewPasswordDone")
+          helper.resetAndGo(navigation, "NewPasswordDone");
 
-          return
-        }
-        else {
-          helper.showTextToast(resp.message, Colors.theme)
-          setisLoading(false)
+          return;
+        } else {
+          helper.showTextToast(resp.message, Colors.theme);
+          setisLoading(false);
 
           // helper.resetAndGo(navigation, "AccessNotAllowed")
         }
       },
       (error) => {
-        helper.showTextToast(error, Colors.theme)
-        setisLoading(false)
+        helper.showTextToast(error, Colors.theme);
+        setisLoading(false);
       }
-    )
+    );
   }
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
-
   return (
-    <View style={{
-      flex: 1,
-      backgroundColor: Colors.AuthScreenBlack,
-    }}>
+    <KeyboardAwareScrollView
+      style={{
+        flex: 1,
+        backgroundColor: Colors.AuthScreenBlack,
+      }}
+      contentContainerStyle={{
+        flexGrow: 1,
+        backgroundColor: Colors.AuthScreenBlack,
+      }}
+      showsVerticalScrollIndicator={false}
+    >
       <StatusBar
         backgroundColor={Colors.AuthScreenBlack}
         translucent={false}
         barStyle="light-content"
-      // barStyle="dark-content"
+        // barStyle="dark-content"
       />
 
       <View
         style={{
           // backgroundColor: 'plum',
-          alignItems: 'center',
+          alignItems: "center",
           marginHorizontal: wp(5),
           marginTop: hp(9),
-        }}>
+          marginBottom: hp(9),
+        }}
+      >
         {/* ========= NAME ========== */}
 
         <Text
@@ -123,9 +153,11 @@ const SetNewPassword = () => {
             color: Colors.white_text,
             marginBottom: hp(1),
             // marginTop: hp(3),
-            fontWeight: '600'
-          }}>Create New Password</Text>
-
+            fontWeight: "600",
+          }}
+        >
+          Create New Password
+        </Text>
 
         {/* ======= Text with Logo ========= */}
         {/* <View
@@ -169,50 +201,57 @@ const SetNewPassword = () => {
 
         <View
           style={{
-            alignItems: 'center',
-            justifyContent: 'center',
+            alignItems: "center",
+            justifyContent: "center",
             // backgroundColor: 'plum',
             marginTop: hp(5),
-          }}>
+          }}
+        >
           <Image
             // resizeMode='cover'
-            source={require('../../../Assets/Images/newpassword.png')}
+            source={require("../../../Assets/Images/newpassword.png")}
             style={{
               width: hp(12),
               height: hp(12),
               // tintColor: Colors.theme
-            }}>
-          </Image>
+            }}
+          ></Image>
         </View>
 
-        <ScrollView showsVerticalScrollIndicator={false}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
           style={{
             // backgroundColor: 'plum',
             marginTop: hp(6),
-          }}>
-
-
+          }}
+        >
           <Text
             style={{
               fontSize: hp(2.6),
               color: Colors.theme,
-              fontWeight: '500',
-              alignSelf: 'flex-start'
-            }}>New Password
+              fontWeight: "500",
+              alignSelf: "flex-start",
+            }}
+          >
+            New Password
           </Text>
-          <View style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            // backgroundColor: 'plum',
-          }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              // backgroundColor: 'plum',
+            }}
+          >
             <Input_For_Auth
               Keyboardtype={"default"}
               AutoCapital={"none"}
               PlaceHolder={"new password"}
               PlaceHolderColor={Colors.gray1}
               Value={NewPassword}
-              OnChangeText={(text) => { setNewPassword(text) }}
+              OnChangeText={(text) => {
+                setNewPassword(text);
+              }}
               SecureText={!isPasswordVisible}
               ReturnType={"done"}
               Width={wp(80)}
@@ -220,14 +259,21 @@ const SetNewPassword = () => {
             ></Input_For_Auth>
 
             <TouchableOpacity
-              onPress={() => { togglePasswordVisibility() }}
+              onPress={() => {
+                togglePasswordVisibility();
+              }}
               style={{
-                alignItems: 'center',
-                justifyContent: 'center',
+                alignItems: "center",
+                justifyContent: "center",
                 padding: hp(0.5),
                 // backgroundColor: Colors.white,
-              }}>
-              <Ionicons name={isPasswordVisible ? "eye" : "eye-off"} size={20} color={Colors.white} />
+              }}
+            >
+              <Ionicons
+                name={isPasswordVisible ? "eye" : "eye-off"}
+                size={20}
+                color={Colors.white}
+              />
             </TouchableOpacity>
           </View>
 
@@ -235,23 +281,29 @@ const SetNewPassword = () => {
             style={{
               fontSize: hp(2.6),
               color: Colors.theme,
-              fontWeight: '500',
-              alignSelf: 'flex-start'
-            }}>Confirm Password
+              fontWeight: "500",
+              alignSelf: "flex-start",
+            }}
+          >
+            Confirm Password
           </Text>
-          <View style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            // backgroundColor: 'plum',
-          }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              // backgroundColor: 'plum',
+            }}
+          >
             <Input_For_Auth
               Keyboardtype={"default"}
               AutoCapital={"none"}
               PlaceHolder={"new password"}
               PlaceHolderColor={Colors.gray1}
               Value={ConfirmPassword}
-              OnChangeText={(text) => { setConfirmPassword(text) }}
+              OnChangeText={(text) => {
+                setConfirmPassword(text);
+              }}
               SecureText={!isPasswordVisible}
               ReturnType={"done"}
               Width={wp(80)}
@@ -259,49 +311,60 @@ const SetNewPassword = () => {
             ></Input_For_Auth>
 
             <TouchableOpacity
-              onPress={() => { togglePasswordVisibility() }}
+              onPress={() => {
+                togglePasswordVisibility();
+              }}
               style={{
-                alignItems: 'center',
-                justifyContent: 'center',
+                alignItems: "center",
+                justifyContent: "center",
                 padding: hp(0.5),
                 // backgroundColor: Colors.white,
-              }}>
-              <Ionicons name={isPasswordVisible ? "eye" : "eye-off"} size={20} color={Colors.white} />
+              }}
+            >
+              <Ionicons
+                name={isPasswordVisible ? "eye" : "eye-off"}
+                size={20}
+                color={Colors.white}
+              />
             </TouchableOpacity>
           </View>
 
-          {isLoading ?
-            <View style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: hp(25),
-            }}>
-              <ActivityIndicator size="large" color={Colors.theme}
+          {isLoading ? (
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: hp(25),
+              }}
+            >
+              <ActivityIndicator
+                size="large"
+                color={Colors.theme}
                 style={{
-                  alignSelf: 'center',
-                }} />
+                  alignSelf: "center",
+                }}
+              />
             </View>
-            :
-            <View style={{
-              marginTop: hp(25),
-            }}>
+          ) : (
+            <View
+              style={{
+                marginTop: hp(25),
+              }}
+            >
               <Simple_Button
-                OnAction={() => { setNewPassword_Controller() }}
+                OnAction={() => {
+                  setNewPassword_Controller();
+                }}
                 Width={wp(90)}
                 Height={hp(6)}
                 BtnTitle={"Submit"}
               />
-
             </View>
-          }
-
+          )}
         </ScrollView>
-
       </View>
+    </KeyboardAwareScrollView>
+  );
+};
 
-
-    </View>
-  )
-}
-
-export default SetNewPassword
+export default SetNewPassword;

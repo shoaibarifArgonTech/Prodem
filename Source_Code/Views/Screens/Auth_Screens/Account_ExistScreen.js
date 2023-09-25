@@ -13,6 +13,7 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { Colors } from "../../../Colors/Colors";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Simple_Button from "../../../ReuseableComponents/Simple_Button";
@@ -94,11 +95,16 @@ export default function Account_ExistScreen() {
   }
 
   return (
-    <View
+    <KeyboardAwareScrollView
       style={{
         flex: 1,
         backgroundColor: Colors.AuthScreenBlack,
       }}
+      contentContainerStyle={{
+        flex: 1,
+        backgroundColor: Colors.AuthScreenBlack,
+      }}
+      showsVerticalScrollIndicator={false}
     >
       <StatusBar
         backgroundColor={Colors.AuthScreenBlack}
@@ -113,6 +119,7 @@ export default function Account_ExistScreen() {
           alignItems: "center",
           marginHorizontal: wp(5),
           marginTop: hp(5),
+          marginBottom: hp(5),
           justifyContent: "space-between",
         }}
       >
@@ -250,6 +257,7 @@ export default function Account_ExistScreen() {
         </View>
         <View
           style={{
+            marginTop: hp(40),
             marginBottom: hp(1),
           }}
         >
@@ -307,6 +315,6 @@ export default function Account_ExistScreen() {
           </View>
         </Modal>
       )}
-    </View>
+    </KeyboardAwareScrollView>
   );
 }
